@@ -10,9 +10,10 @@ def train_model(
         tweet_column = 'tweet',
         sentiment_column = 'sentiment',
         cleaner = clean_tweets,
+        tokenizer = None,
         vectorizer = count_vectorize,
         classifier = RandomForestClassifier(n_estimators=100, random_state=42)):
-    vectorizer, bow_matrix = vectorizer(df, tweet_column, cleaner=cleaner)
+    vectorizer, bow_matrix = vectorizer(df, tweet_column, cleaner=cleaner, tokenizer=tokenizer)
     x_train, x_test, y_train, y_test = train_test_split(
         bow_matrix,
         df[sentiment_column],
@@ -23,8 +24,11 @@ def train_model(
     classifier.fit(x_train, y_train)
     return classifier, vectorizer, x_test, y_test
 
-def evaluate_model(model, x_test, y_test):
+def evaluate_model(model, x_test, y_test, quiet=True):
     test_predictions = model.predict(x_test)
-    print("Classification Report:")
-    print(classification_report(y_test, test_predictions))
-
+    if not quiet:
+        print("Classification Report:")
+        print(classification_report(y_test, test_predictions))
+    # Return accuracy
+    accuracy = (test_predictions == y_test).mean()
+    return accuracy

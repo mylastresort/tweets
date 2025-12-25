@@ -1,39 +1,9 @@
 import pandas as pd
 
-config = {
-    'data_paths': {
-        'neutral': './data/processedNeutral.csv',
-        'positive': './data/processedPositive.csv',
-        'negative': './data/processedNegative.csv'
-    },
-    'text_cleaning': {
-        'remove_mentions': True,
-        'remove_urls': True,
-        'remove_hashtags': True,
-        'remove_punctuation': True,
-        'convert_to_lowercase': True
-    },
-    'tokenization': [
-        'word_tokenize',
-        'stemming',
-        'lemmatization',
-    ],
-    'vectorization': [
-        'bag_of_words',
-        'tfidf',
-    ],
-    'models': [
-        'naive_bayes',
-        'logistic_regression',
-        'random_forest',
-        'svm',
-    ],
-}
-
-def get_merged_dataframe(config):
-    negative_df = pd.read_csv(config['data_paths']['negative'], header=None)
-    positive_df = pd.read_csv(config['data_paths']['positive'], header=None)
-    neutral_df = pd.read_csv(config['data_paths']['neutral'], header=None)
+def get_merged_dataframe(negative_df_path, positive_df_path, neutral_df_path):
+    negative_df = pd.read_csv(negative_df_path, header=None)
+    positive_df = pd.read_csv(positive_df_path, header=None)
+    neutral_df = pd.read_csv(neutral_df_path, header=None)
 
     # transposing the datasets to have tweets in rows
     negative_df = negative_df.transpose().rename(columns={0: 'tweet'})

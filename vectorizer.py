@@ -1,21 +1,26 @@
 from sklearn.feature_extraction.text import CountVectorizer
-from tokenizer import tokenize_tweet, stem_tokens
+from tokenizer import tokenize_tweet
 from cleaning import clean_tweets
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-def custom_tokenizer(text):
+def custom_tokenizer(method=None):
     """Custom tokenizer that returns pre-tokenized input."""
-    # using stemming by default
-    return stem_tokens(tokenize_tweet(text))
+    def cb(text):
+        tokenized_text = tokenize_tweet(text)
+        if method is None:
+            return tokenized_text
+        return method(tokenized_text)
 
-def count_vectorize(tweets, text_column, cleaner = clean_tweets):
+    return cb
+
+def count_vectorize(tweets, text_column, cleaner = clean_tweets, tokenizer=None):
     """Create a Bag of Words representation of the cleaned tweets in the dataframe."""
-    vectorizer = CountVectorizer(tokenizer=custom_tokenizer, lowercase=False)
+    vectorizer = CountVectorizer(tokenizer=custom_tokenizer(method=tokenizer))
     bow_matrix = vectorizer.fit_transform(cleaner(tweets, text_column=text_column)[text_column])
     return vectorizer, bow_matrix
 
-def tfidf_vectorize(tweets, text_column, cleaner = clean_tweets):
+def tfidf_vectorize(tweets, text_column, cleaner = clean_tweets, tokenizer=None):
     """Create a TF-IDF representation of the cleaned tweets in the dataframe."""
-    vectorizer = TfidfVectorizer(tokenizer=custom_tokenizer, lowercase=False)
-    tfidf_matrix = vectorizer.fit_transform(cleaner(tweets, text_column=text_column))
+    vectorizer = TfidfVectorizer(tokenizer=custom_tokenizer(method=tokenizer))
+    tfidf_matrix = vectorizer.fit_transform(cleaner(tweets, text_column=text_column)[text_column])
     return vectorizer, tfidf_matrix
