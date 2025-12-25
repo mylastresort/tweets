@@ -17,5 +17,7 @@ def get_merged_dataframe(negative_df_path, positive_df_path, neutral_df_path):
     all_tweets_df = pd.concat([neutral_df, positive_df, negative_df]).reset_index(drop=True)
     # drop any rows with missing values
     all_tweets_df = all_tweets_df.dropna()
+    
+    df_unique = all_tweets_df.drop_duplicates(subset=['tweet']).reset_index(drop=True)
 
-    return all_tweets_df
+    return df_unique

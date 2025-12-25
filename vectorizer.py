@@ -13,11 +13,14 @@ def custom_tokenizer(method=None):
 
     return cb
 
-def count_vectorize(tweets, text_column, cleaner = clean_tweets, tokenizer=None):
+def count_vectorize(tweets, text_column, cleaner = clean_tweets, tokenizer=None, binary=False):
     """Create a Bag of Words representation of the cleaned tweets in the dataframe."""
-    vectorizer = CountVectorizer(tokenizer=custom_tokenizer(method=tokenizer))
+    vectorizer = CountVectorizer(tokenizer=custom_tokenizer(method=tokenizer), binary=binary)
     bow_matrix = vectorizer.fit_transform(cleaner(tweets, text_column=text_column)[text_column])
     return vectorizer, bow_matrix
+
+def binary_vectorize(tweets, text_column, cleaner = clean_tweets, tokenizer=None):
+    return count_vectorize(tweets, text_column, cleaner, tokenizer, binary=True)
 
 def tfidf_vectorize(tweets, text_column, cleaner = clean_tweets, tokenizer=None):
     """Create a TF-IDF representation of the cleaned tweets in the dataframe."""

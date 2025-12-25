@@ -32,5 +32,4 @@ def clean_tweet(tweet):
 def clean_tweets(dataframe, text_column = 'tweet'):
     """Apply cleaning functions to a dataframe column containing tweets."""
     dataframe[text_column] = dataframe[text_column].apply(clean_tweet)
-    dataframe = dataframe.dropna(subset=[text_column]).reset_index(drop=True)
     return dataframe
